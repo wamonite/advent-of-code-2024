@@ -1,0 +1,30 @@
+[project]
+name = "advent-of-code-2024"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
+    "ruff>=0.8.1",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "W",
+    "I", # isort
+    "N", # pep8-naming
+    "D", # pydocstyle
+    "COM", # flake8-commas
+    "ANN", # flake8-annotations
+    "B", # flake8-bugbear
+]
+ignore = [
+    "D203", # one-blank-line-before-class
+    "D212", # multi-line-summary-first-line
+]
