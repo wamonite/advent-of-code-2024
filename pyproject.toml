@@ -29,4 +29,5 @@ select = [
 ignore = [
     "D203", # one-blank-line-before-class
     "D212", # multi-line-summary-first-line
+    "ANN401", # any-type
 ]

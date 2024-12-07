@@ -2,12 +2,12 @@
 """AOC 2024 Day 07."""
 
 from operator import add, mul
-from typing import Callable, Optional
+from typing import Callable
 
-from aoc import load_data
+from aoc import runner
 
 
-def parse_line(line: str) -> list[int]:
+def line_parser(line: str) -> list[int]:
     """Return the data as lists of ints."""
     return [int(val[:-1] if val.endswith(":") else val) for val in line.split(" ")]
 
@@ -36,43 +36,61 @@ def calculate(
 
 
 def calibrate(
-    file_name: str,
+    data: list[int],
     operators: list[Callable],
-    expected: Optional[int] = None,
-) -> None:
+) -> int:
     """Sum all the target numbers that can be calculated."""
-    data = [parse_line(line) for line in load_data(file_name)]
-
-    total = sum(
+    return sum(
         [
             line[0] if calculate(line[0], line[1], line[2:], operators) else 0
             for line in data
         ],
     )
 
-    print(total)
-
-    if expected is not None:
-        assert total == expected
-
 
 def main() -> None:
     """Day tasks."""
-    operators_day1 = [
+    operators_part1 = [
         add,
         mul,
     ]
-    operators_day2 = [add, mul, lambda lhs, rhs: int(str(lhs) + str(rhs))]
+    operators_part2 = [add, mul, lambda lhs, rhs: int(str(lhs) + str(rhs))]
 
-    calibrate("data/day07.test.txt", operators_day1, expected=3749)
-    calibrate("data/day07.txt", operators_day1)
-    calibrate("data/day07.test.txt", operators_day2, expected=11387)
-    calibrate("data/day07.txt", operators_day2)
+    runner(
+        "07-1",
+        "data/day07.test.txt",
+        calibrate,
+        extra_args=[operators_part1],
+        line_parser=line_parser,
+        expected=3749,
+    )
+    runner(
+        "07-1",
+        "data/day07.txt",
+        calibrate,
+        extra_args=[operators_part1],
+        line_parser=line_parser,
+    )
+    runner(
+        "07-2",
+        "data/day07.test.txt",
+        calibrate,
+        extra_args=[operators_part2],
+        line_parser=line_parser,
+        expected=11387,
+    )
+    runner(
+        "07-2",
+        "data/day07.txt",
+        calibrate,
+        extra_args=[operators_part2],
+        line_parser=line_parser,
+    )
 
 
 if __name__ == "__main__":
     try:
         main()
 
-    except (KeyboardInterrupt, AssertionError):
+    except (KeyboardInterrupt, RuntimeError):
         pass
