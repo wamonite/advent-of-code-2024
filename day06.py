@@ -2,6 +2,7 @@
 """AOC 2024 Day 06."""
 
 import numpy as np
+from tqdm import tqdm
 
 from aoc import runner
 
@@ -81,35 +82,38 @@ def count_guard_loops(data: tuple[list[list[str]], tuple[int, int], int]) -> int
 
     total = 0
     y_max, x_max = map.shape
-    for y_pos in range(y_max):
-        for x_pos in range(x_max):
-            if map[y_pos, x_pos] != ".":
-                continue
+    with tqdm(total=y_max * x_max) as pbar:
+        for y_pos in range(y_max):
+            for x_pos in range(x_max):
+                pbar.update()
 
-            # set the obstruction
-            map[y_pos, x_pos] = "#"
+                if map[y_pos, x_pos] != ".":
+                    continue
 
-            # reset the guard
-            guard_pos = guard_pos_init
-            guard_dir = guard_dir_init
+                # set the obstruction
+                map[y_pos, x_pos] = "#"
 
-            pos_set = set()
-            while True:
-                pos_set.add((guard_pos, guard_dir))
+                # reset the guard
+                guard_pos = guard_pos_init
+                guard_dir = guard_dir_init
 
-                guard_pos, guard_dir = get_next_guard_pos(map, guard_pos, guard_dir)
+                pos_set = set()
+                while True:
+                    pos_set.add((guard_pos, guard_dir))
 
-                # are we off the map?
-                if guard_pos is None:
-                    break
+                    guard_pos, guard_dir = get_next_guard_pos(map, guard_pos, guard_dir)
 
-                # are we in a loop?
-                if (guard_pos, guard_dir) in pos_set:
-                    total += 1
-                    break
+                    # are we off the map?
+                    if guard_pos is None:
+                        break
 
-            # reset the obstruction
-            map[y_pos, x_pos] = "."
+                    # are we in a loop?
+                    if (guard_pos, guard_dir) in pos_set:
+                        total += 1
+                        break
+
+                # reset the obstruction
+                map[y_pos, x_pos] = "."
 
     return total
 
@@ -148,5 +152,5 @@ if __name__ == "__main__":
     try:
         main()
 
-    except (KeyboardInterrupt, AssertionError):
+    except (KeyboardInterrupt, RuntimeError):
         pass

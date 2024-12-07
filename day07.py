@@ -4,6 +4,8 @@
 from operator import add, mul
 from typing import Callable
 
+from tqdm import tqdm
+
 from aoc import runner
 
 
@@ -43,7 +45,7 @@ def calibrate(
     return sum(
         [
             line[0] if calculate(line[0], line[1], line[2:], operators) else 0
-            for line in data
+            for line in tqdm(data)
         ],
     )
 
