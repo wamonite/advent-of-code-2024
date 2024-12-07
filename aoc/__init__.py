@@ -39,7 +39,7 @@ def runner(
     line_parser and load_parser are unused if loader is provided
     """
     if loader:
-        data = loader(file_name) if loader else load_data(file_name, line_parser)
+        data = loader(file_name)
     else:
         data = load_data(file_name, line_parser)
         if load_parser:

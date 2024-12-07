@@ -50,10 +50,7 @@ def calibrate(
 
 def main() -> None:
     """Day tasks."""
-    operators_part1 = [
-        add,
-        mul,
-    ]
+    operators_part1 = [add, mul]
     operators_part2 = [add, mul, lambda lhs, rhs: int(str(lhs) + str(rhs))]
 
     runner(
