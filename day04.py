@@ -3,6 +3,8 @@
 
 import numpy as np
 
+from aoc import runner
+
 XMAS_SEARCH_DIR = (
     (1, 0),
     (1, 1),
@@ -19,6 +21,11 @@ X_MAS_SEARCH_DIR = (
     (-1, -1),
     (1, -1),
 )
+
+
+def load_data(file_name: str) -> np.ndarray:
+    """Load the grid data."""
+    return np.genfromtxt(file_name, dtype="U1", ndmin=2, delimiter=1)
 
 
 def find_xmas(
@@ -106,33 +113,52 @@ def count_x_mas(data: np.ndarray, xpos: int, ypos: int) -> int:
     return 0
 
 
-def word_search(file_name: str, part_one: bool = True, expected: int = None) -> None:
+def word_search(data: np.ndarray, part_one: bool = True, expected: int = None) -> int:
     """Run the word searches."""
-    data = np.genfromtxt(file_name, dtype="U1", ndmin=2, delimiter=1)
-
     count_func = count_xmas if part_one else count_x_mas
     total = 0
     for ypos in range(data.shape[0]):
         for xpos in range(data.shape[1]):
             total += count_func(data, xpos, ypos)
 
-    print(total)
-
-    if expected is not None:
-        assert total == expected
+    return total
 
 
 def main() -> None:
     """Day tasks."""
-    word_search("data/day04.test.txt", expected=18)
-    word_search("data/day04.txt")
-    word_search("data/day04.test.txt", part_one=False, expected=9)
-    word_search("data/day04.txt", part_one=False)
+    runner(
+        "04-1",
+        "data/day04.test.txt",
+        word_search,
+        loader=load_data,
+        expected=18,
+    )
+    runner(
+        "04-1",
+        "data/day04.txt",
+        word_search,
+        loader=load_data,
+    )
+    runner(
+        "04-2",
+        "data/day04.test.txt",
+        word_search,
+        extra_args=[False],
+        loader=load_data,
+        expected=9,
+    )
+    runner(
+        "04-2",
+        "data/day04.txt",
+        word_search,
+        extra_args=[False],
+        loader=load_data,
+    )
 
 
 if __name__ == "__main__":
     try:
         main()
 
-    except (KeyboardInterrupt, AssertionError):
+    except (KeyboardInterrupt, RuntimeError):
         pass

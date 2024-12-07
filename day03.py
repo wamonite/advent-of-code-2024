@@ -3,27 +3,24 @@
 
 import re
 
+from aoc import runner
 
-def cleanse_instructions_1(file_name: str, expected: int = None) -> None:
-    """Cleanse and run corrupted instructions 1."""
+
+def load_data(file_name: str) -> str:
+    """Load all the data as a single string."""
     with open(file_name) as file_object:
-        data = file_object.read()
+        return file_object.read()
 
+
+def cleanse_instructions_1(data: str) -> int:
+    """Cleanse and run corrupted instructions 1."""
     instructions = re.findall(r"mul\((?P<lhs>\d+),(?P<rhs>\d+)\)", data, re.M)
 
-    total = sum(map(lambda val: int(val[0]) * int(val[1]), instructions))
-
-    print(total)
-
-    if expected is not None:
-        assert total == expected
+    return sum(map(lambda val: int(val[0]) * int(val[1]), instructions))
 
 
-def cleanse_instructions_2(file_name: str, expected: int = None) -> None:
+def cleanse_instructions_2(data: str) -> int:
     """Cleanse and run corrupted instructions 2."""
-    with open(file_name) as file_object:
-        data = file_object.read()
-
     matches = re.findall(
         r"(do\(\)|don't\(\)|mul\((?P<lhs>\d+),(?P<rhs>\d+)\))",
         data,
@@ -43,23 +40,42 @@ def cleanse_instructions_2(file_name: str, expected: int = None) -> None:
             if do:
                 total += int(lhs) * int(rhs)
 
-    print(total)
-
-    if expected is not None:
-        assert total == expected
+    return total
 
 
 def main() -> None:
     """Day tasks."""
-    cleanse_instructions_1("data/day03.test1.txt", expected=161)
-    cleanse_instructions_1("data/day03.txt")
-    cleanse_instructions_2("data/day03.test2.txt", expected=48)
-    cleanse_instructions_2("data/day03.txt")
+    runner(
+        "03-1",
+        "data/day03.test1.txt",
+        cleanse_instructions_1,
+        loader=load_data,
+        expected=161,
+    )
+    runner(
+        "03-1",
+        "data/day03.txt",
+        cleanse_instructions_1,
+        loader=load_data,
+    )
+    runner(
+        "03-2",
+        "data/day03.test2.txt",
+        cleanse_instructions_2,
+        loader=load_data,
+        expected=48,
+    )
+    runner(
+        "03-2",
+        "data/day03.txt",
+        cleanse_instructions_2,
+        loader=load_data,
+    )
 
 
 if __name__ == "__main__":
     try:
         main()
 
-    except (KeyboardInterrupt, AssertionError):
+    except (KeyboardInterrupt, RuntimeError):
         pass

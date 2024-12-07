@@ -3,6 +3,8 @@
 
 import numpy as np
 
+from aoc import runner
+
 GUARD_DIR = [
     (0, 1),
     (-1, 0),
@@ -22,6 +24,8 @@ def load_map(file_name: str) -> tuple[list[list[str]], tuple[int, int], int]:
             guard_char = map[y_pos, x_pos]
             if guard_char in GUARD_CHARS:
                 return map, (x_pos, y_pos), GUARD_CHARS.index(guard_char)
+
+    raise ValueError("guard not found")
 
 
 def out_of_bounds(pos: tuple[int, int], size: tuple[int, int]) -> bool:
@@ -56,9 +60,9 @@ def get_next_guard_pos(
             guard_dir = 0
 
 
-def count_guard_steps(file_name: str, expected: int = None) -> None:
+def count_guard_steps(data: tuple[list[list[str]], tuple[int, int], int]) -> int:
     """Count how many locations explored before the guard leaves the map."""
-    map, guard_pos, guard_dir = load_map(file_name)
+    map, guard_pos, guard_dir = data
 
     pos_set = set()
     while True:
@@ -68,16 +72,12 @@ def count_guard_steps(file_name: str, expected: int = None) -> None:
         if guard_pos is None:
             break
 
-    total = len(pos_set)
-    print(total)
-
-    if expected is not None:
-        assert total == expected
+    return len(pos_set)
 
 
-def count_guard_loops(file_name: str, expected: int = None) -> None:
+def count_guard_loops(data: tuple[list[list[str]], tuple[int, int], int]) -> int:
     """Count how many times adding an obstruction puts the guard in a loop."""
-    map, guard_pos_init, guard_dir_init = load_map(file_name)
+    map, guard_pos_init, guard_dir_init = data
 
     total = 0
     y_max, x_max = map.shape
@@ -111,18 +111,37 @@ def count_guard_loops(file_name: str, expected: int = None) -> None:
             # reset the obstruction
             map[y_pos, x_pos] = "."
 
-    print(total)
-
-    if expected is not None:
-        assert total == expected
+    return total
 
 
 def main() -> None:
     """Day tasks."""
-    count_guard_steps("data/day06.test.txt", expected=41)
-    count_guard_steps("data/day06.txt")
-    count_guard_loops("data/day06.test.txt", expected=6)
-    count_guard_loops("data/day06.txt")
+    runner(
+        "06-1",
+        "data/day06.test.txt",
+        count_guard_steps,
+        loader=load_map,
+        expected=41,
+    )
+    runner(
+        "06-1",
+        "data/day06.txt",
+        count_guard_steps,
+        loader=load_map,
+    )
+    runner(
+        "06-2",
+        "data/day06.test.txt",
+        count_guard_loops,
+        loader=load_map,
+        expected=6,
+    )
+    runner(
+        "06-2",
+        "data/day06.txt",
+        count_guard_loops,
+        loader=load_map,
+    )
 
 
 if __name__ == "__main__":

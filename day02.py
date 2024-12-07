@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """AOC 2024 Day 02."""
 
-from aoc import load_data
+from aoc import runner
 
 
-def _get_data(line: str) -> list[int]:
+def line_parser(line: str) -> list[int]:
     """Extract data from stripped lines."""
     return [int(val) for val in line.split(" ") if val]
 
@@ -48,13 +48,10 @@ def get_dampened_reports(report: str) -> list[str]:
 
 
 def check_reports(
-    file_name: str,
+    data: list[str],
     dampened: bool = False,
-    expected: int = None,
-) -> None:
+) -> int:
     """Day 02."""
-    data = [_get_data(line) for line in load_data(file_name)]
-
     safety_count = 0
     dampen_max = 1 if dampened else 0
     for report in data:
@@ -87,23 +84,44 @@ def check_reports(
             if safe:
                 break
 
-    print(safety_count)
-
-    if expected is not None:
-        assert safety_count == expected
+    return safety_count
 
 
 def main() -> None:
     """Day tasks."""
-    check_reports("data/day02.test.txt", expected=2)
-    check_reports("data/day02.txt")
-    check_reports("data/day02.test.txt", dampened=True, expected=4)
-    check_reports("data/day02.txt", dampened=True)
+    runner(
+        "02-1",
+        "data/day02.test.txt",
+        check_reports,
+        line_parser=line_parser,
+        expected=2,
+    )
+    runner(
+        "02-1",
+        "data/day02.txt",
+        check_reports,
+        line_parser=line_parser,
+    )
+    runner(
+        "02-2",
+        "data/day02.test.txt",
+        check_reports,
+        extra_args=[True],
+        line_parser=line_parser,
+        expected=4,
+    )
+    runner(
+        "02-2",
+        "data/day02.txt",
+        check_reports,
+        extra_args=[True],
+        line_parser=line_parser,
+    )
 
 
 if __name__ == "__main__":
     try:
         main()
 
-    except (KeyboardInterrupt, AssertionError):
+    except (KeyboardInterrupt, RuntimeError):
         pass

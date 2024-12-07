@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """AOC 2024 Day 05."""
 
-from aoc import load_data
+from aoc import runner
 
 
-def parse_data(file_name: str) -> tuple[dict[int, list[int]], list[list[int]]]:
+def load_parser(data: list[str]) -> tuple[dict[int, list[int]], list[list[int]]]:
     """Extract the rules and page updates from the file."""
     rules = {}
     updates = []
-    for line in load_data(file_name):
+    for line in data:
         if "|" in line:
             page_l, page_r = line.split("|")
             rule = rules.setdefault(int(page_r), [])
@@ -55,12 +55,11 @@ def fix_update(rules: dict[int, list[int]], update: list[int]) -> list[int]:
 
 
 def check_page_order(
-    file_name: str,
+    data: tuple[dict[int, list[int]], list[list[int]]],
     part_one: bool = True,
-    expected: int = None,
-) -> None:
+) -> int:
     """Check the printing page ordering."""
-    rules, updates = parse_data(file_name)
+    rules, updates = data
 
     total = 0
     for update in updates:
@@ -75,23 +74,44 @@ def check_page_order(
         if result:
             total += result[len(update) // 2]
 
-    print(total)
-
-    if expected is not None:
-        assert total == expected
+    return total
 
 
 def main() -> None:
     """Day tasks."""
-    check_page_order("data/day05.test.txt", expected=143)
-    check_page_order("data/day05.txt")
-    check_page_order("data/day05.test.txt", part_one=False, expected=123)
-    check_page_order("data/day05.txt", part_one=False)
+    runner(
+        "05-1",
+        "data/day05.test.txt",
+        check_page_order,
+        load_parser=load_parser,
+        expected=143,
+    )
+    runner(
+        "05-1",
+        "data/day05.txt",
+        check_page_order,
+        load_parser=load_parser,
+    )
+    runner(
+        "05-2",
+        "data/day05.test.txt",
+        check_page_order,
+        extra_args=[False],
+        load_parser=load_parser,
+        expected=123,
+    )
+    runner(
+        "05-2",
+        "data/day05.txt",
+        check_page_order,
+        extra_args=[False],
+        load_parser=load_parser,
+    )
 
 
 if __name__ == "__main__":
     try:
         main()
 
-    except (KeyboardInterrupt, AssertionError):
+    except (KeyboardInterrupt, RuntimeError):
         pass
