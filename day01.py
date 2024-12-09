@@ -3,7 +3,7 @@
 
 from collections import Counter
 
-from aoc import runner
+from aoc import Runner
 
 
 def line_parser(line: str) -> list[int]:
@@ -30,32 +30,14 @@ def get_similarity(data: list[list[int]]) -> int:
 
 def main() -> None:
     """Day tasks."""
-    runner(
-        "01-1",
-        "data/day01.test.txt",
+    runner = Runner(
+        1,
         get_distance,
-        line_parser=line_parser,
-        expected=11,
-    )
-    runner(
-        "01-1",
-        "data/day01.txt",
-        get_distance,
-        line_parser=line_parser,
-    )
-    runner(
-        "01-2",
-        "data/day01.test.txt",
-        get_similarity,
-        line_parser=line_parser,
-        expected=31,
-    )
-    runner(
-        "01-2",
-        "data/day01.txt",
         get_similarity,
         line_parser=line_parser,
     )
+    runner.part_1(11)
+    runner.part_2(31)
 
 
 if __name__ == "__main__":

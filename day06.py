@@ -4,7 +4,7 @@
 import numpy as np
 from tqdm import tqdm
 
-from aoc import runner
+from aoc import Runner
 
 GUARD_DIR = [
     (0, 1),
@@ -120,32 +120,14 @@ def count_guard_loops(data: tuple[list[list[str]], tuple[int, int], int]) -> int
 
 def main() -> None:
     """Day tasks."""
-    runner(
-        "06-1",
-        "data/day06.test.txt",
+    runner = Runner(
+        6,
         count_guard_steps,
-        loader=load_map,
-        expected=41,
-    )
-    runner(
-        "06-1",
-        "data/day06.txt",
-        count_guard_steps,
-        loader=load_map,
-    )
-    runner(
-        "06-2",
-        "data/day06.test.txt",
-        count_guard_loops,
-        loader=load_map,
-        expected=6,
-    )
-    runner(
-        "06-2",
-        "data/day06.txt",
         count_guard_loops,
         loader=load_map,
     )
+    runner.part_1(41)
+    runner.part_2(6)
 
 
 if __name__ == "__main__":

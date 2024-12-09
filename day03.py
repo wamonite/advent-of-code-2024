@@ -3,7 +3,7 @@
 
 import re
 
-from aoc import runner
+from aoc import Runner
 
 
 def load_data(file_name: str) -> str:
@@ -45,32 +45,15 @@ def cleanse_instructions_2(data: str) -> int:
 
 def main() -> None:
     """Day tasks."""
-    runner(
-        "03-1",
-        "data/day03.test1.txt",
+    runner = Runner(
+        3,
         cleanse_instructions_1,
-        loader=load_data,
-        expected=161,
-    )
-    runner(
-        "03-1",
-        "data/day03.txt",
-        cleanse_instructions_1,
-        loader=load_data,
-    )
-    runner(
-        "03-2",
-        "data/day03.test2.txt",
         cleanse_instructions_2,
-        loader=load_data,
-        expected=48,
-    )
-    runner(
-        "03-2",
-        "data/day03.txt",
-        cleanse_instructions_2,
+        split_test_data=True,
         loader=load_data,
     )
+    runner.part_1(161)
+    runner.part_2(48)
 
 
 if __name__ == "__main__":

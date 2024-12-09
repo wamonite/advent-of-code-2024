@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from aoc import runner
+from aoc import Runner
 
 XMAS_SEARCH_DIR = (
     (1, 0),
@@ -126,34 +126,14 @@ def word_search(data: np.ndarray, part_one: bool = True, expected: int = None) -
 
 def main() -> None:
     """Day tasks."""
-    runner(
-        "04-1",
-        "data/day04.test.txt",
+    runner = Runner(
+        4,
         word_search,
         loader=load_data,
-        expected=18,
+        extra_args_2=[False],
     )
-    runner(
-        "04-1",
-        "data/day04.txt",
-        word_search,
-        loader=load_data,
-    )
-    runner(
-        "04-2",
-        "data/day04.test.txt",
-        word_search,
-        extra_args=[False],
-        loader=load_data,
-        expected=9,
-    )
-    runner(
-        "04-2",
-        "data/day04.txt",
-        word_search,
-        extra_args=[False],
-        loader=load_data,
-    )
+    runner.part_1(18)
+    runner.part_2(9)
 
 
 if __name__ == "__main__":

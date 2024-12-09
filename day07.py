@@ -6,7 +6,7 @@ from typing import Callable
 
 from tqdm import tqdm
 
-from aoc import runner
+from aoc import Runner
 
 
 def line_parser(line: str) -> list[int]:
@@ -55,36 +55,15 @@ def main() -> None:
     operators_part1 = [add, mul]
     operators_part2 = [add, mul, lambda lhs, rhs: int(str(lhs) + str(rhs))]
 
-    runner(
-        "07-1",
-        "data/day07.test.txt",
+    runner = Runner(
+        7,
         calibrate,
-        extra_args=[operators_part1],
-        line_parser=line_parser,
-        expected=3749,
-    )
-    runner(
-        "07-1",
-        "data/day07.txt",
-        calibrate,
-        extra_args=[operators_part1],
+        extra_args_1=[operators_part1],
+        extra_args_2=[operators_part2],
         line_parser=line_parser,
     )
-    runner(
-        "07-2",
-        "data/day07.test.txt",
-        calibrate,
-        extra_args=[operators_part2],
-        line_parser=line_parser,
-        expected=11387,
-    )
-    runner(
-        "07-2",
-        "data/day07.txt",
-        calibrate,
-        extra_args=[operators_part2],
-        line_parser=line_parser,
-    )
+    runner.part_1(3749)
+    runner.part_2(11387)
 
 
 if __name__ == "__main__":

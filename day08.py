@@ -7,7 +7,7 @@ from typing import Iterator, Self
 
 import numpy as np
 
-from aoc import runner
+from aoc import Runner
 
 
 @dataclass(frozen=True)
@@ -33,7 +33,7 @@ class Coordinate:
 
     def within(self, limit: Self) -> bool:
         """Check if coordinate is within a coordinate limit."""
-        return self.x >= 0 and self.x < limit.x and self.y >= 0 and self.y < limit.y
+        return 0 <= self.x < limit.x and 0 <= self.y < limit.y
 
 
 def load_map(file_name: str) -> tuple[dict[str, Coordinate], Coordinate]:
@@ -110,32 +110,14 @@ def count_antinodes_including_harmonics(
 
 def main() -> None:
     """Day tasks."""
-    runner(
-        "08-1",
-        "data/day08.test.txt",
+    runner = Runner(
+        8,
         count_antinodes,
-        loader=load_map,
-        expected=14,
-    )
-    runner(
-        "08-1",
-        "data/day08.txt",
-        count_antinodes,
-        loader=load_map,
-    )
-    runner(
-        "08-2",
-        "data/day08.test.txt",
-        count_antinodes_including_harmonics,
-        loader=load_map,
-        expected=34,
-    )
-    runner(
-        "08-2",
-        "data/day08.txt",
         count_antinodes_including_harmonics,
         loader=load_map,
     )
+    runner.part_1(14)
+    runner.part_2(34)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """AOC 2024 Day 05."""
 
-from aoc import runner
+from aoc import Runner
 
 
 def load_parser(data: list[str]) -> tuple[dict[int, list[int]], list[list[int]]]:
@@ -79,34 +79,14 @@ def check_page_order(
 
 def main() -> None:
     """Day tasks."""
-    runner(
-        "05-1",
-        "data/day05.test.txt",
+    runner = Runner(
+        5,
         check_page_order,
         load_parser=load_parser,
-        expected=143,
+        extra_args_2=[False],
     )
-    runner(
-        "05-1",
-        "data/day05.txt",
-        check_page_order,
-        load_parser=load_parser,
-    )
-    runner(
-        "05-2",
-        "data/day05.test.txt",
-        check_page_order,
-        extra_args=[False],
-        load_parser=load_parser,
-        expected=123,
-    )
-    runner(
-        "05-2",
-        "data/day05.txt",
-        check_page_order,
-        extra_args=[False],
-        load_parser=load_parser,
-    )
+    runner.part_1(143)
+    runner.part_2(123)
 
 
 if __name__ == "__main__":

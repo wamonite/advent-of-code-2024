@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """AOC 2024 Day 02."""
 
-from aoc import runner
+from aoc import Runner
 
 
 def line_parser(line: str) -> list[int]:
@@ -89,34 +89,14 @@ def check_reports(
 
 def main() -> None:
     """Day tasks."""
-    runner(
-        "02-1",
-        "data/day02.test.txt",
+    runner = Runner(
+        2,
         check_reports,
-        line_parser=line_parser,
-        expected=2,
-    )
-    runner(
-        "02-1",
-        "data/day02.txt",
-        check_reports,
+        extra_args_2=[True],
         line_parser=line_parser,
     )
-    runner(
-        "02-2",
-        "data/day02.test.txt",
-        check_reports,
-        extra_args=[True],
-        line_parser=line_parser,
-        expected=4,
-    )
-    runner(
-        "02-2",
-        "data/day02.txt",
-        check_reports,
-        extra_args=[True],
-        line_parser=line_parser,
-    )
+    runner.part_1(2)
+    runner.part_2(4)
 
 
 if __name__ == "__main__":
