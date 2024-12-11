@@ -27,7 +27,7 @@ class Runner:
         extra_args_1: Optional[list[Any]] = None,
         extra_args_2: Optional[list[Any]] = None,
         loader: Optional[Callable[[str], Any]] = None,
-        line_parser: Optional[Callable[[str], str]] = None,
+        line_parser: Optional[Callable[[str], Any]] = None,
         load_parser: Optional[Callable[[list[str]], Any]] = None,
     ) -> None:
         """
@@ -50,21 +50,23 @@ class Runner:
         self.function = (function_1, function_2 if function_2 else function_1)
         self.file_name: dict[str, tuple[str, str]] = {}
         self.file_name["test"] = (
-            f"data/day{day:02d}.test1.txt"
-            if split_test_data
-            else f"data/day{day:02d}.test.txt",
-            f"data/day{day:02d}.test2.txt"
-            if split_test_data
-            else f"data/day{day:02d}.test.txt",
+            self._file_name(True, True, split_test_data),
+            self._file_name(False, True, split_test_data),
         )
         self.file_name["proper"] = (
-            f"data/day{day:02d}.1.txt" if split_data else f"data/day{day:02d}.txt",
-            f"data/day{day:02d}.2.txt" if split_data else f"data/day{day:02d}.txt",
+            self._file_name(True, False, split_data),
+            self._file_name(False, False, split_data),
         )
         self.extra_args = (extra_args_1, extra_args_2)
         self.loader = loader
         self.line_parser = line_parser
         self.load_parser = load_parser
+
+    def _file_name(self, part_one: bool, test: bool, split: bool) -> str:
+        mid_sep = "." if test or split else ""
+        test_str = "test" if test else ""
+        split_part = (1 if part_one else 2) if split else ""
+        return f"data/day{self.day:02d}{mid_sep}{test_str}{split_part}.txt"
 
     def _run(
         self,
