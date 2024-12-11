@@ -1,10 +1,10 @@
 """Advent of Code 2024 utility functions."""
 
 import time
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 
-def load_data(file_name: str, line_parser: Optional[Callable[[str], str]]) -> list[str]:
+def load_data(file_name: str, line_parser: Callable[[str], str] | None) -> list[str]:
     """Load lines from a file and strip line ends."""
     with open(file_name) as file_object:
         return [
@@ -19,16 +19,16 @@ class Runner:
     def __init__(
         self,
         day: int,
-        function_1: Callable[[Any], Any],
-        function_2: Optional[Callable[[Any], Any]] = None,
+        function_1: Callable[..., Any],
+        function_2: Callable[..., Any] | None = None,
         *,
         split_test_data: bool = False,
         split_data: bool = False,
-        extra_args_1: Optional[list[Any]] = None,
-        extra_args_2: Optional[list[Any]] = None,
-        loader: Optional[Callable[[str], Any]] = None,
-        line_parser: Optional[Callable[[str], Any]] = None,
-        load_parser: Optional[Callable[[list[str]], Any]] = None,
+        extra_args_1: list[Any] | None = None,
+        extra_args_2: list[Any] | None = None,
+        loader: Callable[[str], Any] | None = None,
+        line_parser: Callable[[str], Any] | None = None,
+        load_parser: Callable[[list[str]], Any] | None = None,
     ) -> None:
         """
         Run, test and output in a consistent manner.
@@ -71,7 +71,7 @@ class Runner:
     def _run(
         self,
         part_one: bool = True,
-        expected: Optional[int] = None,
+        expected: int | None = None,
     ) -> None:
         part = 0 if part_one else 1
         test = expected is not None
@@ -101,15 +101,16 @@ class Runner:
     def _part(
         self,
         part_one: bool = True,
-        expected: Optional[int] = None,
+        expected: int | None = None,
     ) -> None:
-        self._run(part_one, expected)
+        if expected is not None:
+            self._run(part_one, expected)
         self._run(part_one)
 
-    def part_1(self, expected: Optional[int] = None) -> None:
+    def part_1(self, expected: int | None = None) -> None:
         """Run part 1 tasks."""
         self._part(True, expected)
 
-    def part_2(self, expected: Optional[int] = None) -> None:
+    def part_2(self, expected: int | None = None) -> None:
         """Run part 2 tasks."""
         self._part(False, expected)
