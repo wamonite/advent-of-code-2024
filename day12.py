@@ -8,6 +8,16 @@ from typing import Self
 from aoc import Runner
 
 
+@dataclass(frozen=True)
+class SideCoordinate:
+    """Side coordinates."""
+
+    x: int
+    y: int
+    horizontal: bool
+    left_or_above: bool
+
+
 @dataclass
 class Plot:
     """Plot."""
@@ -15,8 +25,7 @@ class Plot:
     id: int
     block: str
     area: int = 0
-    horizontal_sides: set[tuple[int, int]] = field(default_factory=set)
-    vertical_sides: set[tuple[int, int]] = field(default_factory=set)
+    side_coords: set[SideCoordinate] = field(default_factory=set)
 
     def __eq__(self, other: Self) -> bool:  # type: ignore
         """Check equality on id."""
@@ -25,37 +34,41 @@ class Plot:
     def merge(self, other: Self) -> None:
         """Merge a plot into another."""
         self.area += other.area
-        self.horizontal_sides.update(other.horizontal_sides)
-        self.vertical_sides.update(other.vertical_sides)
+        self.side_coords.update(other.side_coords)
 
     @property
     def perimeter(self) -> int:
         """Return the perimeter."""
-        return len(self.horizontal_sides) + len(self.vertical_sides)
+        return len(self.side_coords)
 
     @property
     def sides(self) -> int:
         """Return the number of sides."""
-        return self._count_sides(True) + self._count_sides(False)
-
-    def _count_sides(self, horizontal: bool) -> int:
-        sides = (
-            self.horizontal_sides.copy() if horizontal else self.vertical_sides.copy()
-        )
+        side_coords = self.side_coords.copy()
         side_count = 0
-        while sides:
+        while side_coords:
             side_count += 1
-            coord = sides.pop()
+            coord = side_coords.pop()
 
             for iter in count(1, 1), count(-1, -1):
                 for idx in iter:
                     coord_new = (
-                        (coord[0] + idx, coord[1])
-                        if horizontal
-                        else (coord[0], coord[1] + idx)
+                        SideCoordinate(
+                            coord.x + idx,
+                            coord.y,
+                            True,
+                            coord.left_or_above,
+                        )
+                        if coord.horizontal
+                        else SideCoordinate(
+                            coord.x,
+                            coord.y + idx,
+                            False,
+                            coord.left_or_above,
+                        )
                     )
-                    if coord_new in sides:
-                        sides.remove(coord_new)
+                    if coord_new in side_coords:
+                        side_coords.remove(coord_new)
 
                     else:
                         break
@@ -112,16 +125,22 @@ class MapCalculator:
 
         plot = self.row_plots[-1]
         if col_idx == 0:
-            plot.vertical_sides.add((0, self.row_idx))
+            plot.side_coords.add(SideCoordinate(0, self.row_idx, False, False))
 
         else:
             plot_left = self.row_plots[-2]
             if plot != plot_left:
-                plot.vertical_sides.add((col_idx, self.row_idx))
-                plot_left.vertical_sides.add((col_idx, self.row_idx))
+                plot.side_coords.add(
+                    SideCoordinate(col_idx, self.row_idx, False, True),
+                )
+                plot_left.side_coords.add(
+                    SideCoordinate(col_idx, self.row_idx, False, False),
+                )
 
             if col_idx == self.width - 1:
-                plot.vertical_sides.add((self.width, self.row_idx))
+                plot.side_coords.add(
+                    SideCoordinate(self.width, self.row_idx, False, True),
+                )
 
         # above
         if self.row_plots_last:
@@ -132,16 +151,20 @@ class MapCalculator:
 
         plot = self.row_plots[-1]
         if self.row_idx == 0:
-            plot.horizontal_sides.add((col_idx, 0))
+            plot.side_coords.add(SideCoordinate(col_idx, 0, True, True))
 
         else:
             plot_above = self.row_plots_last[col_idx]
             if plot != plot_above:
-                plot.horizontal_sides.add((col_idx, self.row_idx))
-                plot_above.horizontal_sides.add((col_idx, self.row_idx))
+                plot.side_coords.add(
+                    SideCoordinate(col_idx, self.row_idx, True, True),
+                )
+                plot_above.side_coords.add(
+                    SideCoordinate(col_idx, self.row_idx, True, False),
+                )
 
             if self.row_idx == self.height - 1:
-                plot.horizontal_sides.add((col_idx, self.height))
+                plot.side_coords.add(SideCoordinate(col_idx, self.height, True, False))
 
     def calculate_row(self, row: str) -> None:
         """Update the map calculations from another row."""
@@ -181,6 +204,30 @@ def calculate_map(map: list[str], part_one: bool = True) -> int:
 
 def main() -> None:
     """Day tasks."""
+    # for map in [
+    #     [
+    #         "EEEEE",
+    #         "EXXXX",
+    #         "EEEEE",
+    #         "EXXXX",
+    #         "EEEEE",
+    #     ],
+    #     [
+    #         "AAAAAA",
+    #         "AAABBA",
+    #         "AAABBA",
+    #         "ABBAAA",
+    #         "ABBAAA",
+    #         "AAAAAA",
+    #     ],
+    # ]:
+    #     calc = MapCalculator(len(map[0]), len(map), False)
+    #     for row in map:
+    #         calc.calculate_row(row)
+    #     print(calc.cost())
+    #     for plot in calc.plot_lookup.values():
+    #         print(f"{plot.id=} {plot.block=} {plot.sides=}")
+
     runner = Runner(
         12,
         calculate_map,
